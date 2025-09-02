@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistical Machine Learning Flashcards</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Styles for the 3D card flip effect */
+        .card-container {
+            perspective: 1000px;
+        }
+        .card {
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+        .card-face {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden; /* Safari */
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div id="flashcard-deck" class="w-full max-w-2xl text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Statistical Machine Learning</h1>
+        <p class="text-gray-600 mb-6">Review Flashcards</p>
+
+        <!-- Container for the cards -->
+        <div class="card-container w-full h-80 md:h-96 mb-6">
+            <!-- Cards will be injected here by JavaScript -->
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex items-center justify-center space-x-4">
+            <button id="prev-card" class="bg-white rounded-lg p-3 shadow-md hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <div id="card-counter" class="text-lg font-semibold text-gray-700 w-24"></div>
+            <button id="next-card" class="bg-white rounded-lg p-3 shadow-md hover:bg-gray-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <footer class="text-center text-gray-500 text-sm py-4">
+        Created by anikeit
+    </footer>
+
+    <script>
+        const flashcardData = {
+            "flashcards": [
+                // 1. Linear Algebra
+                {
+                    "front": { "text": "What are vectors and common vector operations?" },
+                    "back": { "text": "Vectors are mathematical objects with magnitude and direction, often representing points or features in space. Common operations include addition, scalar multiplication, and the dot product (which measures similarity/projection)." }
+                },
+                {
+                    "front": { "text": "What are matrices and common matrix operations?" },
+                    "back": { "text": "Matrices are rectangular arrays of numbers used to represent linear transformations or systems of equations. Common operations include addition, multiplication, transposition, and finding the inverse." }
+                },
+                {
+                    "front": { "text": "What is a projection?" },
+                    "back": { "text": "A projection is the 'shadow' of a vector onto another vector or subspace. It's used to find the component of one vector that lies in the direction of another." }
+                },
+                {
+                    "front": { "text": "What are Eigenvectors and Eigenvalues?" },
+                    "back": { "text": "For a given linear transformation (matrix), an eigenvector is a non-zero vector that only changes by a scalar factor (the eigenvalue) when the transformation is applied to it. They represent the directions of pure stretch/compression." }
+                },
+                {
+                    "front": { "text": "What is a change of basis / linear transformation?" },
+                    "back": { "text": "A linear transformation is a function between vector spaces that preserves vector addition and scalar multiplication, often represented by a matrix. A change of basis is a type of linear transformation that re-expresses vectors in terms of a new set of basis vectors." }
+                },
+                // 2. Probability & Statistics
+                {
+                    "front": { "text": "What is a random variable?" },
+                    "back": { "text": "A variable whose value is a numerical outcome of a random phenomenon. It can be discrete (taking on a countable number of values) or continuous (taking any value in an interval)." }
+                },
+                {
+                    "front": { "text": "What is a probability distribution?" },
+                    "back": { "text": "A function that describes the likelihood of a random variable taking on a particular value or falling within a particular range of values." }
+                },
+                {
+                    "front": { "text": "What is a Gaussian distribution?" },
+                    "back": { "text": "Also known as the normal distribution, it's a bell-shaped probability distribution that is fundamental in statistics due to the central limit theorem. It is defined by its mean and variance." }
+                },
+                {
+                    "front": { "text": "What is an expectation?" },
+                    "back": { "text": "The expectation (or expected value) of a random variable is the long-run average value of repetitions of the experiment it represents. It's a weighted average of all possible values." }
+                },
+                {
+                    "front": { "text": "What is a joint distribution?" },
+                    "back": { "text": "A probability distribution that gives the probability of two or more random variables each taking on a specific value. It describes their behavior together." }
+                },
+                {
+                    "front": { "text": "What is a conditional distribution?" },
+                    "back": { "text": "The probability distribution of a random variable given that another random variable has taken on a specific value." }
+                },
+                 {
+                    "front": { "text": "How do you measure the information in a distribution?" },
+                    "back": { "text": "Information is measured using entropy. A distribution with high entropy (e.g., a uniform distribution) has a lot of uncertainty and low information, while a distribution with low entropy (e.g., a single sharp peak) has low uncertainty and high information." }
+                },
+                {
+                    "front": { "text": "How do you measure the difference between distributions?" },
+                    "back": { "text": "A common method is the Kullback-Leibler (KL) Divergence, which measures how one probability distribution diverges from a second, expected probability distribution. It is an asymmetric measure." }
+                },
+                 {
+                    "front": { "text": "What are parametric, non-parametric, and mixture models?" },
+                    "back": { "text": "Parametric models have a fixed number of parameters (e.g., Gaussian). Non-parametric models have a number of parameters that grows with the data (e.g., k-NN). Mixture models represent the data as a combination of several simpler component distributions (e.g., GMM)." }
+                },
+                // 3. Core ML & Evaluation
+                {
+                    "front": { "text": "What is Statistical Learning Theory?" },
+                    "back": { "text": "It's a framework for studying the problem of inference, i.e., drawing conclusions from data. It seeks to understand the generalization performance of learning algorithms and provides theoretical bounds on their error." }
+                },
+                {
+                    "front": { "text": "What are empirical risk and true risk, and how do they relate?" },
+                    "back": { "text": "Empirical risk is the average loss on the training data set. True risk is the expected loss over the entire (often unknown) data distribution. The goal of learning is to find a model with low true risk, not just low empirical risk." }
+                },
+                {
+                    "front": { "text": "Why is looking only at the empirical risk not enough?" },
+                    "back": { "text": "Minimizing only the empirical risk can lead to overfitting, where the model performs perfectly on the training data but fails to generalize to new, unseen data. We need to balance empirical risk with model complexity." }
+                },
+                {
+                    "front": { "text": "What is the VC-Dimension?" },
+                    "back": { "text": "The Vapnik-Chervonenkis (VC) dimension is a measure of the complexity or 'capacity' of a class of functions (like a classifier). It is defined as the maximum number of points that can be 'shattered' (separated into all possible binary labelings) by the function class." }
+                },
+                {
+                    "front": { "text": "What do underfitting and overfitting mean?" },
+                    "back": { "text": "Underfitting: The model is too simple and fails to capture the underlying trend of the data (high bias). Overfitting: The model is too complex and learns the noise in the training data, failing to generalize to new data (high variance)." }
+                },
+                {
+                    "front": { "text": "What is the bias-variance tradeoff?" },
+                    "back": { "text": "It is the fundamental challenge in modeling where decreasing bias (error from wrong assumptions) typically increases variance (error from sensitivity to small fluctuations in the training set), and vice versa. A good model finds the right balance." }
+                },
+                {
+                    "front": { "text": "What is leave-one-out cross-validation and why is it used?" },
+                    "back": { "text": "It is a type of K-fold cross-validation where K equals the number of data points. It is used to estimate a model's performance on unseen data by training on all data points except one, and then testing on that single point, repeating this for every point." }
+                },
+                // 4. Classification
+                 {
+                    "front": { "text": "What are class priors, class conditional probabilities, and class posteriors?" },
+                    "back": { "text": "Class Prior P(Ck): Probability of a class before seeing data. Class Conditional P(x|Ck): Probability of data given a class. Class Posterior P(Ck|x): Probability of a class after seeing data, calculated via Bayes' theorem." }
+                },
+                {
+                    "front": { "text": "How is Bayes' Theorem used for classification?" },
+                    "back": { "text": "It computes the posterior probability of each class given the data: P(Ck|x) ∝ P(x|Ck)P(Ck). The class with the highest posterior probability is chosen as the prediction." }
+                },
+                {
+                    "front": { "text": "What is a Bayesian Optimal Classifier?" },
+                    "back": { "text": "A classifier that minimizes the probability of misclassification (or more generally, the expected risk) by assigning a new data point to the class with the highest posterior probability, P(Ck|x). It provides the theoretical best performance." }
+                },
+                {
+                    "front": { "text": "What does 'Bayes optimal' mean?" },
+                    "back": { "text": "A decision rule (or classifier) is Bayes optimal if it minimizes the probability of misclassification (or expected risk). This is achieved by always choosing the class with the highest posterior probability." }
+                },
+                 {
+                    "front": { "text": "What is the difference between misclassification rate and risk?" },
+                    "back": { "text": "Misclassification rate is the probability of error, assuming all errors have equal cost. Risk is the expected loss, which is more general and allows different types of errors to have different costs." }
+                },
+                {
+                    "front": { "text": "What is a discriminant function?" },
+                    "back": { "text": "A function that takes an input feature vector and assigns it to a class. For a Bayesian classifier, the discriminant function is often the posterior probability, g_k(x) = P(Ck|x), and the class with the maximum value is chosen." }
+                },
+                {
+                    "front": { "text": "What is the difference between Generative and Discriminative modeling?" },
+                    "back": { "text": "Generative models learn the joint probability P(x, y) and can generate new data. Discriminative models learn the conditional probability P(y|x) or a direct mapping from x to y, focusing only on the decision boundary." }
+                },
+                 {
+                    "front": { "text": "What is Bayesian estimation?" },
+                    "back": { "text": "Instead of finding a single point estimate for parameters, Bayesian estimation computes the entire posterior distribution over the parameters, allowing it to represent uncertainty about the parameter values." }
+                },
+                {
+                    "front": { "text": "What is MAP and how is it different from full Bayesian regression?" },
+                    "back": { "text": "MAP (Maximum A Posteriori) finds a single point estimate for the model parameters that maximizes the posterior probability. Full Bayesian regression computes the entire posterior distribution of the parameters, providing a measure of uncertainty instead of a single best-fit model." }
+                },
+                {
+                    "front": { "text": "How do you formalize a linearly-separable problem?" },
+                    "back": { "text": "A dataset is linearly separable if there exists a hyperplane (defined by a weight vector w and bias b) that perfectly separates the classes. Mathematically, this means for all points (xi, yi), the condition yi(w^T*xi + b) > 0 holds." }
+                },
+                {
+                    "front": { "text": "Why does the least squares solution fail for classification?" },
+                    "back": { "text": "Least squares penalizes points that are far from the decision boundary, even if they are correctly classified. This can skew the decision boundary, especially in the presence of outliers, leading to poor classification performance." }
+                },
+                {
+                    "front": { "text": "What is Fisher’s Linear Discriminant?" },
+                    "back": { "text": "It's a dimensionality reduction method that finds a linear projection of the data that maximizes the separation between the class means while simultaneously minimizing the variance within each class." }
+                },
+                {
+                    "front": { "text": "What is logistic regression?" },
+                    "back": { "text": "It is a discriminative statistical model used for classification. It models the probability of a class by applying the logistic (sigmoid) function to a linear combination of the input features." }
+                },
+                 {
+                    "front": { "text": "What is the perceptron and why does it fail on the XOR problem?" },
+                    "back": { "text": "The perceptron is a simple linear classifier. It fails on the XOR problem because the data is not linearly separable, meaning no single straight line can separate the two classes. This can be overcome by mapping the data to a higher-dimensional feature space." }
+                },
+                // 5. Regression
+                {
+                    "front": { "text": "What is regression?" },
+                    "back": { "text": "Regression is a supervised learning task where the goal is to predict a continuous output value. Linear regression is a specific type where the relationship between inputs and output is modeled as a linear equation." }
+                },
+                {
+                    "front": { "text": "What is the major advantage of Gaussian Processes (GPs) over Kernel Ridge Regression?" },
+                    "back": { "text": "The major advantage of Gaussian Processes is that they provide a measure of uncertainty for their predictions. In addition to the mean prediction, a GP also outputs a variance, which quantifies how confident the model is in its prediction." }
+                },
+                // 6. Dimensionality Reduction
+                {
+                    "front": { "text": "What is dimensionality reduction and why is it needed?" },
+                    "back": { "text": "It is the process of transforming data from a high-dimensional space into a lower-dimensional space while retaining meaningful properties. It's needed to combat the 'curse of dimensionality,' reduce computational cost, and remove redundant features." }
+                },
+                {
+                    "front": { "text": "What is the intuition behind PCA?" },
+                    "back": { "text": "Principal Component Analysis (PCA) finds the directions (principal components) in the data that capture the maximum amount of variance. It projects the data onto a new, lower-dimensional subspace formed by these components." }
+                },
+                {
+                    "front": { "text": "Why is maximizing the variance of a projection a good idea in PCA?" },
+                    "back": { "text": "Maximizing the variance of the projected data means that we are preserving as much of the original data's variability (and thus, information) as possible in the lower-dimensional representation." }
+                },
+                {
+                    "front": { "text": "How does PCA relate to Eigenvectors and Eigenvalues?" },
+                    "back": { "text": "The principal components of the data are the eigenvectors of its covariance matrix. The corresponding eigenvalues indicate the amount of variance captured by each principal component." }
+                },
+                // 7. Clustering
+                {
+                    "front": { "text": "How does the k-means algorithm work?" },
+                    "back": { "text": "It's an iterative process: 1) Initialize K centroids. 2) Assign each data point to the nearest centroid. 3) Update each centroid to be the mean of its assigned points. Repeat steps 2 and 3 until convergence." }
+                },
+                {
+                    "front": { "text": "How are the Expectation and Maximization steps of the EM algorithm defined?" },
+                    "back": { "text": "E-Step (Expectation): Calculate the probabilistic assignment ('responsibilities') of each data point to each cluster based on the current model parameters. M-Step (Maximization): Update the model parameters (means, covariances) to maximize the likelihood of the data given these assignments." }
+                },
+                {
+                    "front": { "text": "Do K-Means and EM converge to local or global solutions?" },
+                    "back": { "text": "Both K-Means and the EM algorithm are only guaranteed to converge to a local optimum, not necessarily the global one. The final result can depend heavily on the initial starting conditions." }
+                },
+                // 8. SVMs
+                {
+                    "front": { "text": "What is the main idea behind Support Vector Machines (SVMs)?" },
+                    "back": { "text": "The main idea is to find the hyperplane that creates the largest possible separation, or 'margin', between the data points of different classes. This is known as maximum margin separation." }
+                },
+                {
+                    "front": { "text": "What is a Kernel?" },
+                    "back": { "text": "A kernel is a function that computes the dot product of two vectors in some (possibly very high-dimensional) feature space. It's a measure of similarity. Common examples are the Polynomial and RBF kernels." }
+                },
+                {
+                    "front": { "text": "What is the Kernel Trick in SVMs?" },
+                    "back": { "text": "It is a technique to handle non-linearly separable data. It allows SVMs to operate in a high-dimensional feature space without explicitly computing the coordinates of the data in that space, by replacing dot products with a kernel function." }
+                },
+                {
+                    "front": { "text": "How do you use SVMs for data that is not linearly separable?" },
+                    "back": { "text": "By using two main techniques: 1) The Kernel Trick to map data to a space where it is separable, and 2) Slack Variables (soft margin) to allow for some misclassifications." }
+                },
+                // 9. Neural Networks
+                {
+                    "front": { "text": "How do neural networks build stacks of feature representations?" },
+                    "back": { "text": "They use a hierarchical structure of layers. Each layer takes the output from the previous one and computes a new, more abstract representation. For example, early layers might detect edges, later layers combine them into shapes, and final layers identify objects." }
+                },
+                {
+                    "front": { "text": "Why are deep neural networks often better than shallow ones?" },
+                    "back": { "text": "Deep networks can build a hierarchy of features, allowing them to learn more complex and abstract representations. They can often represent complex functions more efficiently (with fewer parameters) than a wide, shallow network." }
+                },
+                {
+                    "front": { "text": "How do you do forward and backpropagation?" },
+                    "back": { "text": "Forward propagation: Feed the input data through the network layer by layer to get the final output. Backpropagation: Calculate the error at the output and propagate this error backward through the network, using the chain rule to compute the gradients of the loss with respect to each weight." }
+                },
+                {
+                    "front": { "text": "Which output layer and loss function are used for regression vs. classification?" },
+                    "back": { "text": "For regression, a linear output unit with a squared error (MSE) loss is common. For binary classification, a sigmoid output with cross-entropy loss is used. For multi-class classification, a softmax output with cross-entropy loss is standard." }
+                },
+                {
+                    "front": { "text": "Why use a ReLU activation instead of a sigmoid?" },
+                    "back": { "text": "ReLU (Rectified Linear Unit) helps mitigate the vanishing gradient problem because its derivative is a constant 1 for positive inputs. It is also computationally more efficient and often leads to faster training compared to sigmoid functions." }
+                },
+                // 10. Optimization
+                {
+                    "front": { "text": "How does machine learning relate to optimization?" },
+                    "back": { "text": "Nearly all machine learning problems are framed as optimization problems. The goal is to find the best set of model parameters by minimizing a cost (or loss) function over a dataset." }
+                },
+                {
+                    "front": { "text": "What does a good cost function look like?" },
+                    "back": { "text": "A good cost function is ideally convex, meaning it has a single, global minimum. This ensures that optimization algorithms can find the best possible solution without getting stuck in local minima." }
+                },
+                {
+                    "front": { "text": "What is a convex set?" },
+                    "back": { "text": "A set is convex if for any two points within the set, the straight line segment connecting them is also entirely contained within the set." }
+                },
+                {
+                    "front": { "text": "What is a convex function?" },
+                    "back": { "text": "A function is convex if the line segment connecting any two points on its graph lies on or above the graph. It has a bowl-like shape." }
+                },
+                {
+                    "front": { "text": "Why are convex functions important in machine learning?" },
+                    "back": { "text": "For a convex function, any local minimum is also the global minimum. This guarantees that optimization algorithms can find the single best solution." }
+                },
+                {
+                    "front": { "text": "What are unconstrained and constrained optimization?" },
+                    "back": { "text": "Unconstrained optimization involves minimizing a function without any limitations on the variables. Constrained optimization requires the solution to satisfy additional equality or inequality constraints." }
+                },
+                {
+                    "front": { "text": "What is the Lagrangian?" },
+                    "back": { "text": "The Lagrangian is a function constructed to solve constrained optimization problems. It combines the original objective function and the constraints into a new, unconstrained problem using variables called Lagrange multipliers." }
+                },
+                {
+                    "front": { "text": "Name some numerical optimization methods." },
+                    "back": { "text": "Common methods include Gradient Descent (Steepest Descent), Newton's Method, Quasi-Newton Methods (like BFGS), and Conjugate Gradients." }
+                },
+                {
+                    "front": { "text": "What is mini-batch gradient descent and why is it advantageous?" },
+                    "back": { "text": "It's a gradient descent method where the gradient is computed on a small, random subset (mini-batch) of the training data. It offers a balance between the accuracy of full-batch gradient descent and the speed of stochastic gradient descent." }
+                },
+                {
+                    "front": { "text": "How does the Adam optimization algorithm work?" },
+                    "back": { "text": "Adam (Adaptive Moment Estimation) is an optimization algorithm that computes adaptive learning rates for each parameter. It stores an exponentially decaying average of past squared gradients (like Adadelta/RMSprop) and an exponentially decaying average of past gradients (like momentum)." }
+                }
+            ]
+        };
+
+        const cardContainer = document.querySelector('.card-container');
+        const prevBtn = document.getElementById('prev-card');
+        const nextBtn = document.getElementById('next-card');
+        const cardCounter = document.getElementById('card-counter');
+
+        let cards = [];
+        let currentCardIndex = 0;
+        let totalCards = 0;
+
+        // Function to create and add cards to the DOM
+        function createCards() {
+            // Clear existing cards
+            cardContainer.innerHTML = '';
+            cards = [];
+            
+            totalCards = flashcardData.flashcards.length;
+
+            flashcardData.flashcards.forEach((data, index) => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card absolute w-full h-full cursor-pointer';
+                cardElement.style.display = 'none'; // Initially hide all cards
+
+                const cardFront = document.createElement('div');
+                cardFront.className = 'card-face absolute w-full h-full bg-white rounded-xl shadow-lg flex flex-col items-center justify-center p-6';
+                cardFront.innerHTML = `<h2 class="text-xl md:text-2xl font-semibold text-gray-800">${data.front.text}</h2>`;
+
+                const cardBack = document.createElement('div');
+                cardBack.className = 'card-face card-back absolute w-full h-full bg-blue-500 text-white rounded-xl shadow-lg flex flex-col items-center justify-center p-6';
+                cardBack.innerHTML = `<p class="text-md md:text-lg">${data.back.text}</p>`;
+
+                cardElement.appendChild(cardFront);
+                cardElement.appendChild(cardBack);
+                cardContainer.appendChild(cardElement);
+
+                // Add click listener for flip
+                cardElement.addEventListener('click', () => {
+                    cardElement.classList.toggle('flipped');
+                });
+                
+                cards.push(cardElement);
+            });
+        }
+
+        // Function to show a specific card
+        function showCard(index) {
+            cards.forEach((card, i) => {
+                card.style.display = i === index ? 'block' : 'none';
+                card.classList.remove('flipped'); // Reset flip state
+            });
+            cardCounter.textContent = `${index + 1} / ${totalCards}`;
+            
+            // Update button states
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === totalCards - 1;
+        }
+
+        // Event listeners for navigation
+        prevBtn.addEventListener('click', () => {
+            if (currentCardIndex > 0) {
+                currentCardIndex--;
+                showCard(currentCardIndex);
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentCardIndex < totalCards - 1) {
+                currentCardIndex++;
+                showCard(currentCardIndex);
+            }
+        });
+
+        // Initialize the deck
+        function initializeDeck() {
+            createCards();
+            if (cards.length > 0) {
+                currentCardIndex = 0;
+                showCard(currentCardIndex);
+            } else {
+                cardCounter.textContent = '0 / 0';
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+            }
+        }
+
+        initializeDeck();
+    </script>
+</body>
+</html>
+
